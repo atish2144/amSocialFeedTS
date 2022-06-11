@@ -1,0 +1,38 @@
+// .Card {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: flex-start;
+//   padding: 8px 0px 0px;
+
+//   width: 608px;
+//   height: 873px;
+
+//   background: #ffffff;
+//   box-shadow: -1px -1px 4px rgba(101, 116, 139, 0.1),
+//     2px 2px 4px rgba(101, 116, 139, 0.1);
+//   border-radius: 8px;
+// }
+
+.Card {
+  width: 608px;
+  height: 893px;
+  margin-bottom: 10px;
+}
+
+.image {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.commentsContainer {
+  margin-left: 1%;
+}
+.UserInfo {
+  height: "250px";
+  border: "1px solid black";
+}
+
+.commentContainer1 {
+  margin-top: 5px;
+}

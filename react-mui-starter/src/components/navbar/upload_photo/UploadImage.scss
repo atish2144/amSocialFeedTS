@@ -1,0 +1,68 @@
+.box1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  gap: 120px;
+
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+}
+
+.uploadImage {
+  position: absolute;
+  top: 95%;
+  left: 95%;
+  transform: translate(-50%, -50%);
+  // -ms-transform: "translate(-50%, -50%)";
+  // backgroundColor: "#555",
+  color: black;
+  font-size: 30px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.imageContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  top: 60%;
+  left: 5%;
+  right: 3%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 12px 12px 12px;
+  border: 1 px solid white;
+  cursor: pointer;
+  width: 540px;
+  height: 100px;
+}
+
+.deleteButton {
+  border: none;
+  background-color: rgba(0, 0, 0, 0.05);
+  width: 1px;
+  height: 1px;
+  float: right;
+  margin-bottom: 12px;
+  margin-left: 82%;
+  cursor: pointer;
+}
+
+.addImageIconButton {
+  border: none;
+  margin-left: 32%;
+  margin-top: 25%;
+  cursor: pointer;
+}
+
+.Card {
+  margin-bottom: 15px;
+}
