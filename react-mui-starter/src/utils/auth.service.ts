@@ -6,6 +6,7 @@ import history from "../routes/history";
 import { paths } from "../routes/routes.config";
 import { showErrorToast } from "./toastUtil";
 import { defaultUsers } from "../@types/user";
+import axios from "axios";
 
 let currentUserFromStorage: any;
 
@@ -54,6 +55,12 @@ export const authenticationService = {
   handleForget,
   savedPost,
   home,
+  editProfileData,
+  addPost,
+  updateImage,
+  likePost,
+  addComment,
+  savePost,
 
   currentUser: currentUserSubject.asObservable(),
   get currentUserValue() {
@@ -64,6 +71,10 @@ export const authenticationService = {
     return currentOrganizationSubject.value;
   },
 };
+const user = JSON.parse(localStorage.getItem("currentUser"));
+const token = JSON.parse(localStorage.getItem("token"));
+// console.log(user);
+// console.log(token);
 
 /*
  * Verify OTP method
@@ -267,4 +278,124 @@ function savedPost() {
 function home() {
   history.push(paths.home);
   window.location.reload();
+}
+
+//edit profile
+function editProfileData(payload: any) {
+  // console.log("payload", payload);
+
+  axios(`http://localhost:8080/users/${user._id}`, {
+    method: "patch",
+    data: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+      //  return response;
+    })
+    .catch((error: any) => {
+      console.log(error);
+
+      //  showErrorToast(
+      //    error.message || "Error occurred while validating credentials!"
+      //  );
+
+      //  return error;
+    });
+}
+
+//add post
+function addPost(payload: any) {
+  console.log(payload);
+
+  axios(`http://localhost:8080/feeds`, {
+    method: "post",
+    data: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+
+//update profileImage
+function updateImage(payload: any) {
+  console.log(payload);
+  axios(`http://localhost:8080/users/profile-picture/${user._id} `, {
+    method: "patch",
+    data: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+
+//likePost
+function likePost(id: any) {
+  console.log(id);
+
+  axios(`http://localhost:8080/feeds/like/${id}`, {
+    method: "patch",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+
+//add comment to post
+
+function addComment(payload: any, id: any) {
+  console.log(payload);
+  console.log(id);
+
+  axios(`http://localhost:8080/feeds/comment/${id}`, {
+    method: "patch",
+    data: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+
+//Save indivisualPost
+function savePost(id: any) {
+  console.log(id);
+
+  axios(`http://localhost:8080/feeds/savefeed/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
 }

@@ -14,6 +14,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { json } from 'node:stream/consumers';
 import { SettingsVoiceTwoTone } from '@mui/icons-material';
+import { authenticationService } from '../../../utils/auth.service';
 
 
 const settings = ["Upload Photo", "Remove Photo", "Cancle"];
@@ -46,7 +47,7 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 	const [count, setcount] = useState(0)
 	let token = JSON.parse(localStorage.getItem("token") || " ")
 	// console.log(token);
-
+	const user = JSON.parse(localStorage.getItem("currentUser") || " ")
 	//menu 
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
@@ -57,11 +58,10 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 
 	//Edit Profile
 	const [data, setdata] = useState({
-		"img": "",
 		"name": "",
-		"biodata": "",
+		"bio": "",
 		"gender": "",
-		"dateofbirth": "",
+		"DateOfBirth": "",
 		"mobile": "",
 
 	}
@@ -74,12 +74,15 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 	// console.log(fn);
 	// console.log(ln);
 
-
 	const [firstName, setFirstName] = useState("")
 	const [lastName, setLastName] = useState("");
+	const [updateProfile, setUpdateProfile] = useState(false)
+	const [File, setFile] = useState("")
+	const [data1, setData1] = useState("")
+
 
 	useEffect(() => {
-		axios("http://localhost:8080/users/6299987a0dec390e1b6e7b87", {
+		axios(`http://localhost:8080/users/${user._id}`, {
 			method: "GET",
 			headers: {
 				"Authorization": `Bearer ${token}`,
@@ -89,15 +92,14 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 				console.log(res);
 				if (res.data !== "") {
 					setdata({
-						img: res.data.img || image,
+						// img: res.data.img || image,
+						// Image: res.data.Image,
 						name: res.data.name || "",
-						biodata: res.data.biodata || "",
+						bio: res.data.bio || "",
 						gender: res.data.gender || "",
-						dateofbirth: res.data.dateofbirth || "",
+						DateOfBirth: res.data.DateOfBirth || "",
 						mobile: res.data.mobile || "",
 					})
-
-
 				}
 			})
 			.catch((err) => {
@@ -106,28 +108,71 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 			})
 	}, [count])
 
+
+	useEffect(() => {
+		axios(`http://localhost:8080/users/${user._id}`, {
+			method: "GET",
+			headers: {
+				"Authorization": `Bearer ${token}`,
+			}
+		})
+			.then((res) => {
+				console.log(res);
+				if (res.data !== "") {
+					setData1(res.data.Image)
+				}
+
+			})
+			.catch((err) => {
+				console.log(err);
+				console.log(`Bearer${token}`)
+			})
+	}, [count])
+
+	console.log("2", data1);
+
+	// useEffect(() => {
+	// 	axios(`http://localhost:8080/users/${user._id}`, {
+	// 		method: "GET",
+	// 		headers: {
+	// 			"Authorization": `Bearer ${token}`,
+	// 		}
+	// 	})
+	// 		.then((res) => {
+	// 			console.log(res);
+	// 			if (res.data !== "") {
+	// 				setdata({
+	// 				})
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 			console.log(`Bearer${token}`)
+	// 		})
+	// }, [count])
+
+
 	useEffect(() => {
 		setFirstName(fn);
 		setLastName(ln);
-		console.log("1");
 
 	}, [fn, ln])
 
 
-	// console.log("firstName", firstName);
-	// console.log("lastName", lastName);
 
 
 	//updated data
 	const handleSubmit = () => {
-
-
 		setdata({ ...data, name: firstName + " " + lastName })
+		let formData = new FormData;
+		// words = ["apple", "ball", "cat"]
+		formData.append("Image", image)
 
-		// let formData = new FormData()
-		// formData.append('gender', data.gender);
+		handleClose();
 
 
+		authenticationService.editProfileData(data);
+		authenticationService.updateImage(formData)
 
 	}
 
@@ -135,20 +180,16 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 
 	function handleOnChange(value: string | React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
 		// if (no !== undefined && no !== "") {
-
-		const formData = new FormData();
-
-		console.log(formData.append("username", "Groucho"));
+		// const formData = new FormData();
+		// console.log(formData.append("username", "Groucho"));
 
 		setdata({ ...data, mobile: value })
 		// }
-		setdata({ ...data, img: image })
-		console.log(formData);
-
-
+		// setdata({ ...data, img: image })
+		console.log(data);
 
 	}
-
+	// console.log(data);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -167,17 +208,17 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 
 
 	const handleFileUpload = (e: any) => {
-		const { files } = e.target;
-		if (files && files.length) {
-			const filename = files[0].name;
+		// const { files } = e.target;
+		// if (files && files.length) {
+		// 	const filename = files[0].name;
+		// 	console.log(files);
 
-			var parts = filename.split(".");
-			const fileType = parts[parts.length - 1];
-			// console.log("fileType", fileType); //ex: zip, rar, jpg, svg etc.
-			// setImage(files[0]);
-			setImage(URL.createObjectURL(files[0]));
-
-		}
+		// 	setImage(URL.createObjectURL(files[0]));
+		// 	// setImage(files)
+		// }
+		setFile(URL.createObjectURL(e.target.files[0]))
+		setImage(e.target.files[0]);
+		setUpdateProfile(true)
 
 	};
 	const onButtonClick = () => {
@@ -185,20 +226,14 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 	};
 
 	// console.log("image", image);
-	console.log("1", data);
+	// console.log("1", data);
 
 	return (
 		<div>
 			<div>
 
-
 				<Box sx={style}>
 					<Box sx={{ flexGrow: 0 }}>
-						{/* <Tooltip title="Open settings">
-             			 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-             			 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                        </IconButton>
-                        </Tooltip> */}
 
 						<Menu
 							sx={{ mt: "35px", ml: "30px" }}
@@ -216,11 +251,7 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{/* {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))} */}
+
 
 							<MenuItem key={0} onClick={() => { handleCloseUserMenu(); onButtonClick() }}>
 								<Typography textAlign="center"  >   {settings[0]}</Typography>
@@ -254,9 +285,7 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 								{/* <Avatar src='/AM.jpg' style={{ width: "100px", height: "99px" }} /> */}
 
 								<Avatar style={{ width: "100px", height: "99px" }} >
-
-									<img src={image} alt="log" style={{ width: "100px", height: "99px" }} />
-
+									<img src={updateProfile ? File : `http://localhost:8080/${data1}`} alt={"pic"} style={{ width: "100px", height: "99px" }} />
 								</Avatar>
 								<input
 									style={{ display: "none" }}
@@ -302,7 +331,8 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 								aria-label="empty textarea"
 								placeholder="Bio"
 								style={{ width: 393, height: 70 }}
-								onChange={(e) => setdata({ ...data, biodata: e.target.value })}
+								value={data.bio}
+								onChange={(e) => setdata({ ...data, bio: e.target.value })}
 							/>
 						</Grid>
 
@@ -335,11 +365,11 @@ const EditProfile = ({ handleClose }: PropsFunction) => {
 										id="date"
 										type="date"
 										size="small"
-										value={data.dateofbirth}
+										value={data.DateOfBirth}
 										onChange={(value) =>
 											setdata({
 												...data,
-												dateofbirth: value.target.value,
+												DateOfBirth: value.target.value,
 											})
 										}
 									// fullWidth

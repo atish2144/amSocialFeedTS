@@ -5,68 +5,46 @@ import Typography from "@mui/material/Typography";
 import { Grid, Input, Stack } from "@mui/material";
 import Box from "@mui/material/Box";
 // import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import { red } from '@mui/material/colors';
-import { TextField } from '@mui/material';
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardActions from "@mui/material/CardActions";
+import Avatar from "@mui/material/Avatar";
+import { red } from "@mui/material/colors";
+import { TextField } from "@mui/material";
 import axios from "axios";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfiedRounded';
-import Modal from '@mui/material/Modal';
-import MobileStepper from '@mui/material/MobileStepper';
-import { useTheme } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
-import { DataArrayRounded } from "@mui/icons-material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import SentimentSatisfiedRoundedIcon from "@mui/icons-material/SentimentSatisfiedRounded";
+import Modal from "@mui/material/Modal";
+import MobileStepper from "@mui/material/MobileStepper";
+import { useTheme } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import SwipeableViews from "react-swipeable-views";
+import { autoPlay } from "react-swipeable-views-utils";
+
 import CssBaseline from "@mui/material/CssBaseline";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
-
-
-
+import { authenticationService } from "../../utils/auth.service";
+import { json } from "stream/consumers";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
-const images = [
-  {
-    label: 'San Francisco – Oakland Bay Bridge, United States',
-    imgPath:
-      'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-  },
-  {
-    label: 'Bird',
-    imgPath:
-      'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-  },
-  {
-    label: 'Bali, Indonesia',
-    imgPath:
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
-  },
-  {
-    label: 'Goč, Serbia',
-    imgPath:
-      'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-  },
-];
 const style = {
-  position: 'absolute' as 'absolute',
+  position: "absolute" as "absolute",
   top: "10% ",
-  left: '50%',
-  transform: 'translate(-50%)',
+  left: "50%",
+  transform: "translate(-50%)",
   width: "600px",
   height: "600px",
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   // border: '2px solid #fff	',
   boxShadow: 10,
 
@@ -74,108 +52,144 @@ const style = {
 };
 
 const style1 = {
-  position: 'absolute' as 'absolute',
+  position: "absolute" as "absolute",
   top: "20% ",
   left: "50%",
-  transform: 'translate(-50%)',
+  transform: "translate(-50%)",
   width: "800px",
   height: "400px",
-  bgcolor: 'background.paper',
-  // border: '2px solid #fff	',
-  boxShadow: 24,
-  outline: "none"
+  bgcolor: "background.paper",
+  // bgcolor: 'yellow',
+  border: "2px solid #fff	",
+  boxShadow: 10,
+  outline: "none",
   // p: 2,
 };
 
-const messages = [
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary:
-      "I'll be in the neighbourhood",
-    person: "/static/images/avatar/5.jpg"
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do you have a suggestion for `,
-    person: "/static/images/avatar/1.jpg"
-  },
-  {
-    id: 3,
-    primary: "Recipe to try",
-    secondary:
-      "I am try out this new BBQ recipe",
-    person: "/static/images/avatar/2.jpg"
-  },
-  {
-    id: 4,
-    primary: "Yes!",
-    secondary: "I have the tickets to",
-    person: "/static/images/avatar/3.jpg"
-  },
-  {
-    id: 5,
-    primary: "Doctor's Appointment",
-    secondary:
-      "My appointment for the doctor ",
-    person: "/static/images/avatar/4.jpg"
-  },
-  {
-    id: 6,
-    primary: "Discussion",
-    secondary: `Menus that are generated by the bottom app bar `,
-    person: "/static/images/avatar/5.jpg"
-  },
-  {
-    id: 7,
-    primary: "Summer BBQ",
-    secondary: `Who wants to have a cookout`,
-    person: "/static/images/avatar/1.jpg"
-  }
-];
-
+// const messages = [
+//   {
+//     id: 1,
+//     primary: "Brunch this week?",
+//     secondary:
+//       "I'll be in the neighbourhood",
+//     person: "/static/images/avatar/5.jpg"
+//   },
+//   {
+//     id: 2,
+//     primary: "Birthday Gift",
+//     secondary: `Do you have a suggestion for `,
+//     person: "/static/images/avatar/1.jpg"
+//   },
+//   {
+//     id: 3,
+//     primary: "Recipe to try",
+//     secondary:
+//       "I am try out this new BBQ recipe",
+//     person: "/static/images/avatar/2.jpg"
+//   },
+//   {
+//     id: 4,
+//     primary: "Yes!",
+//     secondary: "I have the tickets to",
+//     person: "/static/images/avatar/3.jpg"
+//   },
+//   {
+//     id: 5,
+//     primary: "Doctor's Appointment",
+//     secondary:
+//       "My appointment for the doctor ",
+//     person: "/static/images/avatar/4.jpg"
+//   },
+//   {
+//     id: 6,
+//     primary: "Discussion",
+//     secondary: `Menus that are generated by the bottom app bar `,
+//     person: "/static/images/avatar/5.jpg"
+//   },
+//   {
+//     id: 7,
+//     primary: "Summer BBQ",
+//     secondary: `Who wants to have a cookout`,
+//     person: "/static/images/avatar/1.jpg"
+//   }
+// ];
 
 export default function Login() {
-
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = images.length;
+  // const maxSteps = images.length;
 
-  const [viewAll, SetViewAll] = useState(false)
+  const [viewAll, SetViewAll] = useState(false);
+  const user: any = JSON.parse(localStorage.getItem("currentUser") || "[]");
+  const token: any = JSON.parse(localStorage.getItem("token") || "[]");
+  const [data, setData] = React.useState<any>([]);
+  const [count, setCount] = useState(0);
+  const [postIndex, setPostIndex] = useState("");
+  const [userData, setUserData] = React.useState<any>([]);
+  //comment
+  const [comment, setComment] = useState(" ");
 
-  const token = JSON.parse(localStorage.getItem("token"))
-  const [data, setData] = React.useState<any>([])
+  //savePost
+  const [savePostCount, setSavePostCount] = useState(0);
 
-  //modal 
+  //avtarName for view all commet
+  let AvtarName1;
+
+  //modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   // const [expanded, setExpanded] = React.useState(false);
   // const handleExpandClick = () => {
   //   setExpanded(!expanded);
   // };
 
+  //like
+  const [like, setLike] = useState(false);
+
+  const handleLike = (id: any) => {
+    console.log(id);
+
+    authenticationService.likePost(id);
+    if (like) {
+      setLike(false);
+    } else {
+      setLike(true);
+    }
+  };
+
   useEffect(() => {
-    axios("http://localhost:8080/feeds", {
+    axios("http://localhost:8080/feeds?page=1&limit=30", {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         // console.log(res.data);
-        setData(res.data.results)
+        setData(res.data.results.reverse());
         console.log(res.data.results);
       })
       .catch((err) => {
         console.log(err);
+      });
+  }, [count, like]);
 
+  useEffect(() => {
+    axios(`http://localhost:8080/users/${user._id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        // console.log(res.data);
+        setUserData(res.data);
       })
-  }, [])
-
-  console.log("1", data);
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [savePostCount]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -189,92 +203,114 @@ export default function Login() {
     setActiveStep(step);
   };
 
-  // useEffect(() => {
+  const handleComment = (id: any) => {
+    console.log(comment);
+    console.log(id);
 
-  // }, [data])
+    let payload = {
+      comment: comment,
+    };
+    console.log(payload);
+    setCount((prev) => prev + 1);
+    setComment("");
+    authenticationService.addComment(payload, id);
+  };
 
+  const handleCommit = (index: any) => {
+    let name = data[index].CreatedBy.name.split("");
+    AvtarName1 = name[0];
+    console.log(AvtarName1);
+    console.log(index);
+    setPostIndex(index);
+  };
 
+  const handleSavePost = (id: any) => {
+    console.log(id);
+    setSavePostCount((prev) => prev + 1);
+    authenticationService.savePost(id);
+  };
+
+  console.log(userData);
+
+  // console.log(
+  //   userData != "" &&
+  //     userData.Savedata[2].FeedId._id === "62a478a1085ce2c27428b207"
+  // );
 
   return (
-    <>
+    <div>
       {/* <Navbar /> */}
+      {/* <img src={`http://localhost:8080/1654940897308.png`} /> */}
       <Container maxWidth="sm">
         <Box sx={{ my: 4 }}>
+          {data.length > 0 &&
+            data.map((item, index) => {
+              // console.log(user._id);
+              // console.log(item?.like[0]?.likeBy);
+              // console.log(item?.like[0]?.likeBy === user._id)
+              // console.log(item.CreatedBy.Image);
+              // console.log(item.CreatedBy.name);
+              let name = item.CreatedBy.name.split("");
+              let AvtarName = name[0];
+              // console.log(AvtarName);
 
-          {data.length > 0 && data.map((item, index) => {
-            return (
-
-              <Card className="Card" key={index} >
-                <CardHeader
-                  avatar={
-                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                      AJ
-                    </Avatar>
-                  }
-
-                  // title={<Typography>{data.results[index].CreatedBy.name}</Typography>}
-
-                  title={<Typography> {item.CreatedBy.name}</Typography>}
-
-
-                  subheader="Unknown"
-                />
-
-                {/* <img src={require("./Photo.jpeg")} alt="emoji" width={"608px"} height={"608"}></img> */}
-                <AutoPlaySwipeableViews
-                  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                  index={activeStep}
-                  onChangeIndex={handleStepChange}
-                  enableMouseEvents
-                  autoplay={false}
-                >
-                  {/* data.results. */}
-                  {item.image.map((item1, index) => {
-                    console.log(`http://localhost:8080/${item1.filename}`)
-                    return (
-                      <div key={index}>
-                        {Math.abs(activeStep - index) <= 2 ? (
-                          // <Box
-                          //   // component="img"
-                          //   sx={{
-                          //     // height: 255,
-                          //     display: 'block',
-                          //     // maxWidth: 400,
-                          //     overflow: 'hidden',
-                          //     width: "608px",
-                          //     height: "608px"
-                          //   }}
-                          // >
+              return (
+                <Card className="Card" key={index}>
+                  <CardHeader
+                    avatar={
+                      item.CreatedBy.Image ? (
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                           <img
-                            style={{
-                              // height: 255,
-                              display: 'block',
-                              // maxWidth: 400,
-                              overflow: 'hidden',
-                              width: "608px",
-                              height: "608px"
-                            }}
-                            // src={`http://localhost:8080/${item1.filename}`}
-                            src={`http://localhost:8080/1654940897308.png`}
-                            // src="http://localhost:8080/1654940897308.png"
-                            // src={`${images[index].imgPath}`}
-                            alt="pic"
+                            src={`http://localhost:8080/${item.CreatedBy.Image}`}
+                            alt={"pic"}
+                            style={{ width: "40px", height: "40px" }}
                           />
+                        </Avatar>
+                      ) : (
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                          {AvtarName}
+                        </Avatar>
+                      )
+                    }
+                    // title={<Typography>{data.results[index].CreatedBy.name}</Typography>}
+                    title={<Typography> {item.CreatedBy.name}</Typography>}
+                    subheader="Unknown"
+                  />
 
-                          // </Box>
+                  {/* <img src={require("./Photo.jpeg")} alt="emoji" width={"608px"} height={"608"}></img> */}
+                  <AutoPlaySwipeableViews
+                    axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+                    index={activeStep}
+                    onChangeIndex={handleStepChange}
+                    enableMouseEvents
+                    autoplay={false}
+                  >
+                    {/* data.results. */}
 
-                        ) : null}
-                      </div>
-                    )
-                  }
-
-
-                  )}
-
-
-
-                </AutoPlaySwipeableViews>
-                {/* <MobileStepper
+                    {item?.image?.map((item1, index) => {
+                      // console.log(`http://localhost:8080/${item1.filename}`)
+                      return (
+                        <div key={index}>
+                          {Math.abs(activeStep - index) <= 2 ? (
+                            <Box
+                              component="img"
+                              sx={{
+                                // height: 255,
+                                display: "block",
+                                // maxWidth: 400,
+                                overflow: "hidden",
+                                width: "608px",
+                                height: "608px",
+                              }}
+                              src={`http://localhost:8080/${item1.filename}`}
+                              alt="image"
+                            />
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </AutoPlaySwipeableViews>
+                  {/* <MobileStepper
                     steps={maxSteps}
                     position="static"
                     activeStep={activeStep}
@@ -304,203 +340,425 @@ export default function Login() {
                     }
                   /> */}
 
-                {/* <CardContent>
+                  {/* <CardContent>
 
-          </CardContent> */}
-                <CardActions disableSpacing>
-                  <div>
-                    <img className="image" src={require("./notLiked.png")} alt="like" ></img>
+                   </CardContent> */}
+                  {/* <CardActions disableSpacing> */}
+                  <div style={{ width: "608px", marginTop: "2px" }}>
+                    {
+                      // like ?
+                      //   <img className="image" src={require("./liked.png")} alt="like" onClick={() => handleLike(item._id)} ></img>
+                      //   : <img className="image" src={require("./notLiked.png")} alt="like" onClick={() => handleLike(item._id)} ></img>
 
-                    <img className="image" src={require("./commet.png")} alt="commet"></img>
+                      // item?.like[0]?.likeBy === user._id ? (
 
-                    {/* <img className="image" src={require("./notSaved.png")} alt="commet" style={{ position: "absolute", right: "1%" }}></img> */}
+                      item?.like.filter(
+                        (liked: any) => liked.likeBy === user._id
+                      ).length > 0 ? (
+                        <img
+                          className="image"
+                          src={require("./liked.png")}
+                          alt="like"
+                          onClick={() => handleLike(item._id)}
+                        ></img>
+                      ) : (
+                        <img
+                          className="image"
+                          src={require("./notLiked.png")}
+                          alt="like"
+                          onClick={() => handleLike(item._id)}
+                        ></img>
+                      )
+                    }
 
+                    <button style={{ border: "none" }}>
+                      <ChatBubbleOutlineIcon />
+                    </button>
+
+                    {userData?.Savedata?.filter(
+                      (item1: any) => item1.FeedId._id === item._id
+                    ).length > 0 ? (
+                      <button
+                        style={{
+                          border: "none",
+                          position: "absolute",
+                          right: "27%",
+                        }}
+                        onClick={() => handleSavePost(data[index]._id)}
+                      >
+                        <BookmarkIcon />
+                      </button>
+                    ) : (
+                      <button
+                        style={{
+                          border: "none",
+                          position: "absolute",
+                          right: "27%",
+                        }}
+                        onClick={() => handleSavePost(data[index]._id)}
+                      >
+                        <BookmarkBorderIcon />
+                      </button>
+                    )}
                   </div>
 
-                </CardActions>
+                  {/* </CardActions> */}
 
-                <Typography style={{ color: "#212B36", fontWeight: "Bold" }}>{item.like.length} like </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Typography style={{ color: "#212B36", fontWeight: "Bold" }}>{item.CreatedBy.name} </Typography>
+                  <Typography style={{ color: "#212B36", fontWeight: "Bold" }}>
+                    {item.like.length} like{" "}
+                  </Typography>
+                  <Stack direction="row" spacing={2}>
+                    <Typography
+                      style={{ color: "#212B36", fontWeight: "Bold" }}
+                    >
+                      {item.CreatedBy.name}{" "}
+                    </Typography>
 
+                    <Typography style={{ color: "#212B36" }}>
+                      {item.caption}
+                    </Typography>
+                  </Stack>
+                  <Typography>3 Hours ago</Typography>
+                  <Typography
+                    onClick={() => {
+                      handleOpen();
+                      SetViewAll(true);
+                      handleCommit(index);
+                    }}
+                  >
+                    view all Comments
+                  </Typography>
 
-                  <Typography style={{ color: "#212B36" }}>{item.caption}</Typography>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    style={{ marginTop: "30px" }}
+                  >
+                    <img src={require("./emoji.png")} alt="emoji"></img>
 
-                </Stack>
-                <Typography>3 Hours ago</Typography>
-                <Typography onClick={() => { handleOpen(); SetViewAll(true) }}>view all Comments</Typography>
-
-                <Stack direction="row" spacing={2} style={{ marginTop: "30px" }} >
-
-                  <img src={require("./emoji.png")} alt="emoji" ></img>
-
-                  {/* <TextField size="small" style={{ width: "430px" }} placeholder="Add Comment"
+                    {/* <TextField size="small" style={{ width: "430px" }} placeholder="Add Comment"
                   /> */}
-                  <Input placeholder="Add Your Comment" disableUnderline={true} style={{ outline: "none", width: "450px" }} />
+                    <Input
+                      placeholder="Add Your Comment"
+                      disableUnderline={true}
+                      style={{ outline: "none", width: "450px" }}
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
 
-                  <Typography style={{ marginLeft: "50px", marginTop: "10px", fontWeight: "Bold", color: "#1890FF" }}>POST</Typography>
-                </Stack>
+                    <Typography
+                      style={{
+                        marginLeft: "50px",
+                        marginTop: "10px",
+                        fontWeight: "Bold",
+                        color: "#1890FF",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleComment(item._id)}
+                    >
+                      POST
+                    </Typography>
+                  </Stack>
+                </Card>
+              );
+            })}
 
-                {
-                  viewAll ?
-                    <>
-                      <Modal
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
+          {viewAll ? (
+            <>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style1}>
+                  <div
+                    className="commetContainer"
+                    style={{ display: "flex", flexDirection: "row" }}
+                  >
+                    <Box
+                      className="imageContainer1"
+                      component="img"
+                      sx={{
+                        // mt: "2px",
+                        height: 400,
+                        display: "block",
+                        // maxWidth: 803,
+                        overflow: "hidden",
+                        width: 500,
+                      }}
+                      // src={require("./Photo.jpeg")}
+                      src={`http://localhost:8080/${data[postIndex].image[0].filename}`}
+                      alt="pic"
+                    />
+
+                    {/* 2nd Container */}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      {/* user container */}
+                      <div
+                        className="Conatainer1"
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          height: "70px",
+                          width: "300px",
+                        }}
                       >
-
-                        <Box sx={style1}>
-                          <div className="commetContainer" style={{ display: "flex", flexDirection: "row" }}>
-                            <Box
-                              className="imageContainer1"
-                              component="img"
-                              sx={{
-                                // mt: "2px",
-                                height: 400,
-                                display: 'block',
-                                // maxWidth: 803,
-                                overflow: 'hidden',
-                                width: 500,
-                              }}
-                              src={require("./Photo.jpeg")}
-                              alt="pic"
+                        <div className="UserInfo">
+                          <Avatar
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              marginTop: "3px",
+                            }}
+                          >
+                            <img
+                              src={`http://localhost:8080/${data[postIndex].CreatedBy.Image}`}
+                              alt={"pic"}
+                              style={{ width: "40px", height: "40px" }}
                             />
+                          </Avatar>
+                        </div>
 
-                            {/* 2nd Container */}
-                            <div style={{ display: "flex", flexDirection: "column", }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          <Typography
+                            style={{
+                              fontWeight: 600,
+                              fontFamily: "PublicSans",
+                              fontSize: "14px",
+                              lineHeight: "22px",
+                            }}
+                          >
+                            {data[postIndex].CreatedBy.name}
+                          </Typography>
 
-                              {/* user container */}
-                              <div className="Conatainer1" style={{ display: "flex", flexDirection: "row", height: "70px", width: "300px" }}>
+                          <Typography
+                            style={{
+                              fontWeight: 400,
+                              fontSize: "14px",
+                              fontFamily: "PublicSans",
+                              lineHeight: "22px",
+                              opacity: "0.5",
+                            }}
+                          >
+                            Unknown
+                          </Typography>
 
-                                <div className="UserInfo">
-                                  <Avatar style={{ width: "35px", height: "35px", marginTop: "3px" }}>AJ</Avatar>
-                                </div>
+                          <Typography
+                            style={{
+                              fontWeight: 400,
+                              fontSize: "14px",
+                              fontFamily: "PublicSans",
+                              lineHeight: "22px",
+                            }}
+                          >
+                            {data[postIndex].caption}
+                          </Typography>
+                        </div>
+                      </div>
 
-                                <div style={{ display: "flex", flexDirection: "column", marginLeft: "15px", }}>
-                                  <Typography style={{
-                                    fontWeight: 600, fontFamily: "PublicSans", fontSize: "14px", lineHeight: "22px",
-                                  }}>Atish Jagtap</Typography>
+                      {/* commmet container     */}
+                      <div
+                        className="containerTwo"
+                        style={{
+                          height: "230px",
+                          overflowY: "scroll",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        <div className="commentContainer1">
+                          <React.Fragment>
+                            <CssBaseline />
+                            <Paper square sx={{ pb: "50px" }}>
+                              <List sx={{ mb: 2 }}>
+                                {/* {messages.map(({ id, primary, secondary, person }) => ( */}
+                                {data[postIndex].Comment.map((item, index) => (
+                                  <React.Fragment key={index}>
+                                    {/* <ListItem button> */}
+                                    {/* <ListItemAvatar> */}
 
-                                  <Typography style={{ fontWeight: 400, fontSize: "14px", fontFamily: "PublicSans", lineHeight: "22px", opacity: "0.5" }}>Mountains</Typography>
+                                    <div
+                                      className="11"
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        marginTop: "15px",
+                                      }}
+                                    >
+                                      <Avatar
+                                        alt="AJ"
+                                        src={"abc"}
+                                        style={{
+                                          width: "35px",
+                                          height: "35px",
+                                          marginRight: "5px",
+                                        }}
+                                      />
 
-                                  <Typography style={{ fontWeight: 400, fontSize: "14px", fontFamily: "PublicSans", lineHeight: "22px" }}>Heaven On Earth</Typography>
-                                </div>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: "column",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                          }}
+                                        >
+                                          <Typography
+                                            sx={{
+                                              fontWeight: 600,
+                                              fontSize: "14px",
+                                              lineHeight: "22px",
+                                              marginRight: "10px",
+                                            }}
+                                          >
+                                            {item.commentedBy.name}{" "}
+                                          </Typography>
 
+                                          <Typography
+                                            sx={{
+                                              fontWeight: 400,
+                                              fontSize: "14px",
+                                              lineHeight: "22px",
+                                            }}
+                                          >
+                                            {"nice click"}
+                                          </Typography>
+                                        </div>
 
-                              </div>
+                                        <div style={{ display: "flex" }}>
+                                          <Typography
+                                            sx={{
+                                              fontWeight: "400",
+                                              fontSize: "12px",
+                                              lineHeight: "18px",
+                                              marginRight: "12px",
+                                              fontStyle: "normal",
+                                            }}
+                                          >
+                                            {"1 hour ago"}
+                                          </Typography>
 
-                              {/* commmet container     */}
-                              <div className="containerTwo" style={{ height: "230px", overflowY: "scroll" }}>
-                                <div className="commentContainer1">
+                                          <Typography
+                                            sx={{
+                                              fontWeight: "700",
+                                              fontSize: "12px",
+                                              lineHeight: "18px",
+                                            }}
+                                          >
+                                            Reply
+                                          </Typography>
+                                        </div>
+                                      </div>
+                                      <div
+                                        style={{
+                                          position: "absolute",
+                                          right: "1%",
+                                        }}
+                                      >
+                                        <FavoriteBorderIcon />
+                                      </div>
 
-
-                                  <React.Fragment>
-                                    <CssBaseline />
-                                    <Paper square sx={{ pb: "50px" }}>
-                                      <List sx={{ mb: 2 }}>
-                                        {messages.map(({ id, primary, secondary, person }) => (
-                                          <React.Fragment key={id}>
-                                            {/* <ListItem button> */}
-                                            {/* <ListItemAvatar> */}
-
-
-                                            <div className="11" style={{ display: "flex", flexDirection: "row", marginTop: "15px" }}>
-
-                                              <Avatar alt="AJ" src={person} style={{ width: "35px", height: "35px", marginRight: "5px" }} />
-
-
-
-                                              <div style={{ display: "flex", flexDirection: "column" }}>
-                                                <div style={{ display: "flex", flexDirection: "row" }}>
-                                                  <Typography sx={{ fontWeight: 600, fontSize: "14px", lineHeight: "22px", marginRight: "10px" }}>{primary}</Typography>
-
-                                                  <Typography sx={{ fontWeight: 400, fontSize: "14px", lineHeight: "22px" }}>{"nice click"}</Typography>
-                                                </div>
-
-                                                <div style={{ display: "flex" }}>
-                                                  <Typography sx={{ fontWeight: '400', fontSize: "12px", lineHeight: "18px", marginRight: "12px", fontStyle: "normal" }}>{"1 hour ago"}</Typography>
-
-
-                                                  <Typography sx={{ fontWeight: '700', fontSize: "12px", lineHeight: "18px" }}>Reply</Typography>
-
-                                                </div>
-
-
-                                              </div>
-
-
-                                              <div style={{ position: "absolute", right: "1%" }}><FavoriteBorderIcon /></div>
-
-
-                                              {/* <div> */}
-
-                                              {/* </div> */}
-
-                                            </div>
-
-
-                                          </React.Fragment>
-                                        ))}
-                                      </List>
-                                    </Paper>
+                                      {/* <div> */}
+                                      {/* </div> */}
+                                    </div>
                                   </React.Fragment>
+                                ))}
+                              </List>
+                            </Paper>
+                          </React.Fragment>
+                        </div>
+                      </div>
 
-                                </div>
+                      {/*  likesThird container */}
+                      <div className="containerThree">
+                        <div style={{ display: "flex" }}>
+                          <FavoriteBorderIcon
+                            style={{ margin: "5px 0 0  20px" }}
+                          />
+                          <BookmarkBorderIcon
+                            sx={{
+                              margin: "5px",
+                              position: "absolute",
+                              right: "1%",
+                            }}
+                          />
+                        </div>
 
-                              </div>
+                        <Typography
+                          style={{
+                            fontSize: "14px",
+                            lineHeight: "22px",
+                            marginLeft: "15px",
+                            fontWeight: 400,
+                          }}
+                        >
+                          1 Like
+                        </Typography>
 
+                        <Typography
+                          style={{
+                            fontWeight: 400,
+                            fontSize: "14px",
+                            fontFamily: "PublicSans",
+                            lineHeight: "22px",
+                            opacity: "0.8",
+                            marginLeft: "15px",
+                          }}
+                        >
+                          3 hours ago
+                        </Typography>
 
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                          <SentimentSatisfiedRoundedIcon
+                            style={{
+                              width: "23px",
+                              height: "23px",
+                              margin: "0 10px 0 8px",
+                            }}
+                          />
 
+                          <input
+                            type="text"
+                            style={{
+                              width: "255px",
+                              height: "20px",
+                              margin: "3px 2px 0,0",
+                              outline: "none",
+                            }}
+                          />
 
-                              {/*  likesThird container */}
-                              <div className="containerThree">
-                                <div style={{ display: "flex" }}>
-                                  <FavoriteBorderIcon style={{ margin: "5px 0 0  20px" }} />
-
-                                  <BookmarkBorderIcon sx={{ margin: "5px", position: "absolute", right: "1%" }} />
-
-
-                                </div>
-
-                                <Typography style={{ fontSize: "14px", lineHeight: "22px", marginLeft: "15px", fontWeight: 400 }}>1 Like</Typography>
-
-                                <Typography style={{ fontWeight: 400, fontSize: "14px", fontFamily: "PublicSans", lineHeight: "22px", opacity: "0.8", marginLeft: "15px" }}>3 hours ago</Typography>
-
-                                <div style={{ display: "flex", flexDirection: "row" }}>
-
-                                  <SentimentSatisfiedRoundedIcon style={{ width: "23px", height: "23px", margin: "0 10px 0 8px" }} />
-
-                                  <input type="text" style={{ width: "255px", height: "20px", margin: "3px 2px 0,0", outline: "none" }} />
-
-                                  <Typography style={{ float: "right", fontWeight: "700", color: "#1890FF", paddingLeft: "10px" }}>POST</Typography>
-
-                                </div>
-
-
-                              </div>
-
-
-                            </div>
-                          </div>
-
-                        </Box>
-                      </Modal >
-                    </>
-                    : ""
-                }
-              </Card>
-            )
-          }
+                          <Typography
+                            style={{
+                              float: "right",
+                              fontWeight: "700",
+                              color: "#1890FF",
+                              paddingLeft: "10px",
+                            }}
+                          >
+                            POST
+                          </Typography>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Box>
+              </Modal>
+            </>
+          ) : (
+            ""
           )}
-
-
         </Box>
       </Container>
-
-
-
-    </>
+    </div>
   );
 }

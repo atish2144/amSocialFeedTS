@@ -232,12 +232,6 @@ export default function Login() {
                   style={{ marginBottom: "30px", marginLeft: "auto", marginRight: "auto" }}
                 />
               </Grid>
-
-
-
-
-
-
             </Grid>
           </Box>
         </Box>

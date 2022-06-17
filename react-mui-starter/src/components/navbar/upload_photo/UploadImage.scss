@@ -43,6 +43,7 @@
   cursor: pointer;
   width: 540px;
   height: 100px;
+  // overflow: hidden;
 }
 
 .deleteButton {
@@ -51,8 +52,13 @@
   width: 1px;
   height: 1px;
   float: right;
+  position: absolute;
   margin-bottom: 12px;
-  margin-left: 82%;
+  // border-radius: 50&;
+  // margin-left: 82%;
+  // margin-top: 25%;
+  top: 5%;
+  padding-left: 110px;
   cursor: pointer;
 }
 

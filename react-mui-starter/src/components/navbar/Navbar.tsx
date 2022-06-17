@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.scss";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,19 +9,18 @@ import IconButton from "@mui/material/IconButton";
 // import Tooltip from "@mui/material/Tooltip";
 import { Avatar, Box, Button, Menu, MenuItem, Stack } from "@mui/material";
 // import EditIcon from '@mui/icons-material/Edit';
-import HomeIcon from '@mui/icons-material/Home';
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
-import LockResetRoundedIcon from '@mui/icons-material/LockResetRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import Modal from '@mui/material/Modal';
-import EditProfile from "./EditProfile/EditProfile"
-import UploadImage from "./upload_photo/UploadImage"
+import HomeIcon from "@mui/icons-material/Home";
+import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
+import LockResetRoundedIcon from "@mui/icons-material/LockResetRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import Modal from "@mui/material/Modal";
+import EditProfile from "./EditProfile/EditProfile";
+import UploadImage from "./upload_photo/UploadImage";
 import SavedPost from "./savedPost/SavedPost";
 import { authenticationService } from "../../utils/auth.service";
-
-
+import axios from "axios";
 
 // import logo from "./AM.jpg"
 
@@ -30,30 +29,47 @@ export type NavbarProps = {
    * To be triggered on logout click
    */
   onLogout?: any;
-
 };
-const settings = ['Edit profile', 'Change password', 'Logout'];
-
+const settings = ["Edit profile", "Change password", "Logout"];
 
 export const Navbar = ({ onLogout }: NavbarProps) => {
-
-
-
-  const data: String = JSON.parse(localStorage.getItem("currentUser")) || [];
+  // const data: String = JSON.parse(localStorage.getItem("currentUser")) || [];
   //navbar menu items
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] =
+    React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] =
+    React.useState<null | HTMLElement>(null);
+  const token: any = JSON.parse(localStorage.getItem("token") || "[]");
+  const user: any = JSON.parse(localStorage.getItem("currentUser") || "[]");
+  const [data, setData] = React.useState<any>();
 
   //modal edit profile
   const [open, setOpen] = React.useState(false);
 
   //modal post photo
-  const [open1, setOpen1] = React.useState(false)
+  const [open1, setOpen1] = React.useState(false);
 
   //bookmark
-  const [bookmarkOpen, setbookmarkOpen] = useState(false)
+  const [bookmarkOpen, setbookmarkOpen] = useState(false);
 
-  //navbar menu items 
+  useEffect(() => {
+    axios(`http://localhost:8080/users/${user._id}`, {
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res: any) => {
+        setData(res.data);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  }, []);
+
+  // console.log(data !== undefined && data.name);
+
+  //navbar menu items
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -77,7 +93,7 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
   const handleOpen1 = () => setOpen1(true);
   const handleClose1 = (): void => {
     setOpen1(false);
-  }
+  };
 
   //handleBookmark
   const handlebookmark = () => {
@@ -86,52 +102,75 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
 
     if (bookmarkOpen) {
       setbookmarkOpen(false);
-    }
-    else {
+    } else {
       setbookmarkOpen(true);
     }
 
     authenticationService.savedPost();
-  }
+  };
   // console.log(data);
-  console.log(bookmarkOpen);
-
+  // console.log(bookmarkOpen);
 
   const handleHome = () => {
-    authenticationService.home()
-  }
+    setOpen(false);
+    authenticationService.home();
+  };
 
+  // console.log(user.name);
+  let name = user.name.split("");
+  let AvtarName = name[0];
+  // console.log(AvtarName);
   return (
     <>
-      <AppBar position="static" style={{ backgroundColor: "#fff", minWidth: "400px" }}>
+      <AppBar
+        position="static"
+        style={{ backgroundColor: "#fff", minWidth: "400px" }}
+      >
         <Toolbar variant="dense">
-          <Avatar style={{ marginLeft: "10%", marginRight: "10px", width: "3%", height: "3%" }}
-            src={require("./images/logo.png")}  >
-          </Avatar>
+          <Avatar
+            style={{
+              marginLeft: "10%",
+              marginRight: "10px",
+              width: "3%",
+              height: "3%",
+            }}
+            src={require("./images/logo.png")}
+          ></Avatar>
 
           <img src={require("./images/Life@AM.png")} alt="img"></img>
 
           {/* <Tooltip title="Logout"> */}
-          <Stack direction="row" alignItems={"center"} sx={{ marginLeft: "47%" }}>
-
-
-            <Button variant="text" style={{ color: 'black' }} onClick={() => { authenticationService.home() }} >
+          <Stack
+            direction="row"
+            alignItems={"center"}
+            sx={{ marginLeft: "47%" }}
+          >
+            <Button
+              variant="text"
+              style={{ color: "black" }}
+              onClick={() => {
+                authenticationService.home();
+              }}
+            >
               <HomeIcon />
             </Button>
 
-            <Button variant="text" style={{ color: 'black' }} >
+            <Button variant="text" style={{ color: "black" }}>
               <CameraAltOutlinedIcon onClick={() => handleOpen1()} />
             </Button>
 
-
-            <Button variant="text" style={{ color: 'black' }} onClick={() => handlebookmark()} >
+            <Button
+              variant="text"
+              style={{ color: "black" }}
+              onClick={() => handlebookmark()}
+            >
               {/* <BookmarkAddOutlinedIcon /> */}
 
-              {!bookmarkOpen ?
+              {!bookmarkOpen ? (
                 <img src={require("./images/BeforeSave.png")} alt="pic" />
-                :
+              ) : (
                 <img src={require("./images/AfterSave.png")} alt="pic1" />
-              }
+              )}
             </Button>
 
             {/* <Avatar style={{ cursor: "pointer" }} >
@@ -142,75 +181,118 @@ export const Navbar = ({ onLogout }: NavbarProps) => {
               {/* <Tooltip title="Open settings"> */}
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {/* <Avatar alt="J" src="/static/images/avatar/2.jpg" /> */}
-                <Avatar style={{ width: "28px", height: "28px" }}>AJ</Avatar>
+
+                {/*   */}
+
+                {data !== undefined && data.Image ? (
+                  <Avatar style={{ width: "30px", height: "30px" }}>
+                    <img
+                      src={`http://localhost:8080/${data.Image}`}
+                      alt={"pic"}
+                      style={{ width: "28px", height: "28px" }}
+                    />
+                  </Avatar>
+                ) : (
+                  <Avatar style={{ width: "30px", height: "30px" }}>
+                    {AvtarName}
+                  </Avatar>
+                )}
               </IconButton>
               {/* </Tooltip> */}
               <Menu
-                sx={{ mt: '45px' }}
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-
-                <MenuItem key={0} onClick={() => { handleCloseUserMenu(); handleOpen(); }}>
-                  <Typography textAlign="center"  > <ManageAccountsRoundedIcon />  {settings[0]}</Typography>
+                <MenuItem
+                  key={0}
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    handleOpen();
+                  }}
+                >
+                  <Typography textAlign="center">
+                    {" "}
+                    <ManageAccountsRoundedIcon /> {settings[0]}
+                  </Typography>
                 </MenuItem>
 
                 <MenuItem key={1} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center"><LockResetRoundedIcon style={{ marginTop: "1%" }} /> {settings[1]}</Typography>
+                  <Typography textAlign="center">
+                    <LockResetRoundedIcon style={{ marginTop: "1%" }} />{" "}
+                    {settings[1]}
+                  </Typography>
                 </MenuItem>
 
-                <MenuItem key={2} onClick={() => { handleCloseUserMenu(); }}>
-                  <Typography textAlign="center" style={{ marginBottom: "px" }} onClick={onLogout}><LogoutRoundedIcon onClick={onLogout} /> {settings[2]}</Typography>
+                <MenuItem
+                  key={2}
+                  onClick={() => {
+                    handleCloseUserMenu();
+                  }}
+                >
+                  <Typography
+                    textAlign="center"
+                    style={{ marginBottom: "px" }}
+                    onClick={onLogout}
+                  >
+                    <LogoutRoundedIcon onClick={onLogout} /> {settings[2]}
+                  </Typography>
                 </MenuItem>
               </Menu>
             </Box>
-            <Typography style={{ fontSize: "18px", fontWeight: "600", color: "black" }}>{data.name}</Typography>
+            {data !== undefined ? (
+              <Typography
+                style={{ fontSize: "18px", fontWeight: "600", color: "black" }}
+              >
+                {data.name}
+              </Typography>
+            ) : (
+              " "
+            )}
           </Stack>
-
         </Toolbar>
-      </AppBar >
-
+      </AppBar>
 
       <div>
-        {
-          open1 ?
-            <Modal
-              open={open1}
-              onClose={handleClose1}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-              
-            >
-              <UploadImage handleClose1={handleClose1} />
-            </Modal>
-            : ""
-        }
+        {open1 ? (
+          <Modal
+            open={open1}
+            onClose={handleClose1}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <UploadImage handleClose1={handleClose1} />
+          </Modal>
+        ) : (
+          ""
+        )}
       </div>
 
       <div>
-        {
-          open ?
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <EditProfile handleClose={handleClose} />
-            </Modal>
-            : ""
-        }    </div>
+        {open ? (
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <EditProfile handleClose={handleClose} />
+          </Modal>
+        ) : (
+          ""
+        )}{" "}
+      </div>
 
       {/* {
         bookmarkOpen ?
